@@ -1,0 +1,6 @@
+pandas
+requests
+lxml
+asyncio
+aiohttp
+argparse
