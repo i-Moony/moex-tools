@@ -26,6 +26,8 @@ BOARD_MAP = {
     "index": "SNDX",
 }
 
+BASE_COLS = ["open", "high", "low", "close", "volume", "value"]
+
 BASE_URL = "https://iss.moex.com/iss/engines/stock/markets/"
 
 
@@ -262,12 +264,18 @@ async def main():
     input_file_path = args.input
     output_file_path = args.output
     fill = args.fill
-    base = args.base
+    base = args.base.lower()
     output_stats_file_path = args.stats
 
     if not input_file_path.exists():
         print(f"Файл {input_file_path} должен существовать!")
         sys.exit(1)
+
+    if base not in BASE_COLS:
+        print(
+            f"Аргумент BASE должен принимать значение из списка {', '.join(BASE_COLS)}"
+        )
+        sys.exit(2)
 
     input_file = read_input_file(input_file_path)
 
@@ -313,7 +321,7 @@ async def main():
     final_df.to_csv(output_file_path, encoding="utf-8", decimal=",", sep=";")
 
     if not output_stats_file_path:
-        return
+        sys.exit(0)
 
     print()
     stats = get_stats(final_df)
